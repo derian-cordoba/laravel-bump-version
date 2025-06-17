@@ -1,0 +1,25 @@
+{
+  "name": "deriancordoba/laravel-bump-version",
+  "description": "Simple library to manage versions in Laravel applications.",
+  "homepage": "https://github.com/derian-cordoba/laravel-bump-version",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "version",
+    "bump",
+    "laravel-version",
+    "laravel"
+  ],
+  "autoload": {
+    "psr-4": {
+      "Deriancordoba\\BumpVersion\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "derian-cordoba",
+      "email": "derianricardo451@gmail.com"
+    }
+  ],
+  "require": {}
+}
