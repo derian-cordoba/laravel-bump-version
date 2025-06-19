@@ -4,7 +4,7 @@
 [![Latest Version](https://img.shields.io/github/v/release/derian-cordoba/laravel-bump-version?label=version)](https://github.com/derian-cordoba/laravel-bump-version/releases)
 [![License](https://img.shields.io/github/license/derian-cordoba/laravel-bump-version)](LICENSE)
 
-**Laravel Bump Version** is a lightweight library to handle semantic version bumping (`major.minor.patch`) in Laravel projects or any PHP project.
+**Laravel Bump Version** is a lightweight library to handle semantic version bumping (`major.minor.patch`) in Laravel projects.
 
 ## Installation
 
