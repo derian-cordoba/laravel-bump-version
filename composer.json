@@ -50,5 +50,6 @@
   "scripts": {
     "test": "phpunit tests"
   },
-  "prefer-stable": true
+  "prefer-stable": true,
+  "minimum-stability": "stable"
 }
