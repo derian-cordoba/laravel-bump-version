@@ -17,6 +17,30 @@ class VersionHandler implements HandlerContract
     }
 
     /**
+     * Bump version using major type
+     */
+    public function major(): void
+    {
+        $this->bump(bumpType: BumpType::MAJOR);
+    }
+
+    /**
+     * Bump version using minor type
+     */
+    public function minor(): void
+    {
+        $this->bump(bumpType: BumpType::MINOR);
+    }
+
+    /**
+     * Bump version using patch type
+     */
+    public function patch(): void
+    {
+        $this->bump(bumpType: BumpType::PATCH);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function bump(BumpType $bumpType): void
