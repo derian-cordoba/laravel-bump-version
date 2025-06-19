@@ -11,6 +11,7 @@ use BumpVersion\Contracts\WriterContract;
 use BumpVersion\Tools\VersionReader;
 use BumpVersion\Tools\VersionWriter;
 use BumpVersion\VersionHandler;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -22,10 +23,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(
-            path: static::CONFIG_PATH,
-            key: 'bump-version',
-        );
+        $this->mergeConfigFrom(path: static::CONFIG_PATH,
+                               key: 'bump-version');
     }
 
     /**
@@ -33,34 +32,24 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot(): void
     {
-        $this->publishes(
-            paths: [static::CONFIG_PATH => $this->getConfigPath()],
-            groups: 'config',
-        );
+        $this->publishes(paths: [static::CONFIG_PATH => $this->getConfigPath()],
+                         groups: 'config');
 
-        $this->app->bind(
-            abstract: HandlerContract::class,
-            concrete: VersionHandler::class,
-        );
+        $this->app->bind(abstract: ReaderContract::class,
+                         concrete: VersionReader::class);
 
-        $this->app->bind(
-            abstract: ReaderContract::class,
-            concrete: VersionReader::class,
-        );
+        $this->app->bind(abstract: WriterContract::class,
+                         concrete: VersionWriter::class);
 
-        $this->app->bind(
-            abstract: WriterContract::class,
-            concrete: VersionWriter::class,
-        );
+        $this->app->bind(abstract: HandlerContract::class,
+                         concrete: static fn (Application $app): VersionHandler =>
+                            new VersionHandler(writer: $app->make(WriterContract::class),
+                                               reader: $app->make(ReaderContract::class)));
 
         if ($this->app->runningInConsole()) {
-            $this->commands(
-                commands: [
-                    BumpMajorCommand::class,
-                    BumpMinorCommand::class,
-                    BumpPatchCommand::class,
-                ]
-            );
+            $this->commands(commands: [BumpMajorCommand::class,
+                                       BumpMinorCommand::class,
+                                       BumpPatchCommand::class]);
         }
     }
 
@@ -71,10 +60,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function publishConfig(string $configPath): void
     {
-        $this->publishes(
-            paths: [$configPath => config_path('bump-version.php')],
-            groups: 'config',
-        );
+        $this->publishes(paths: [$configPath => config_path('bump-version.php')],
+                         groups: 'config');
     }
 
     /**
@@ -82,6 +69,6 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function getConfigPath(): string
     {
-        return config_path('bump-version.php');
+        return config_path(path: 'bump-version.php');
     }
 }

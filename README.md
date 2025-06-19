@@ -63,7 +63,7 @@ Basic PHP usage:
 
 use BumpVersion\VersionHandler;
 
-$handler = new VersionHandler();
+$handler = app(VersionHandler::class);
 
 // Bump patch: 1.0.0 → 1.0.1
 $handler->patch();
