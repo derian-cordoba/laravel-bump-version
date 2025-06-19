@@ -49,5 +49,6 @@
   },
   "scripts": {
     "test": "phpunit tests"
-  }
+  },
+  "prefer-stable": true
 }
