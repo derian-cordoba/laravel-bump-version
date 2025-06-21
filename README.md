@@ -86,7 +86,7 @@ Also, you can use the verbose mode to bump the version:
 use BumpVersion\Enums\BumpType;
 use BumpVersion\VersionHandler;
 
-$handler = new VersionHandler();
+$handler = app(VersionHandler::class);
 
 // Bump major: 1.0.0 → 2.0.0
 $handler->bump(BumpType::MAJOR);
