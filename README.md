@@ -18,11 +18,22 @@ composer require derian-cordoba/laravel-bump-version
 
 ### Register the Service Provider
 
-Add the service provider in your config/app.php if you are not using package auto-discovery:
+Add the service provider in your `bootstrap/providers.php` (after Laravel 11.x) if you are not using package auto-discovery:
+
+```php
+<?php
+
+return [
+    App\Providers\AppServiceProvider::class,
+    BumpVersion\Providers\ServiceProvider::class, // Add this line
+];
+```
+
+If you are using Laravel 10.x or earlier, add it to your `config/app.php`:
 
 ```php
 'providers' => [
-    BumpVersion\Providers\ServiceProvider::class,
+    BumpVersion\Providers\ServiceProvider::class, // Add this line
 ],
 ```
 
@@ -128,16 +139,27 @@ return [
      *
      * By default, it is set to 'version' in the base path of the application.
      */
-    'file_path' => env('BUMP_VERSION_FILE_PATH', base_path('version')),
+    'file_path' => env('BUMP_VERSION_FILE_PATH', base_path('composer.json')),
 
     /**
-     * Default version number to use if the version file does not exist.
+     * Mode configuration for reading the version number.
      *
-     * This should be a valid semantic version string.
+     * This allows you to specify how the version number should be read.
      *
-     * By default, it is set to '0.0.1'.
+     * By default, it is set to read from a JSON file.
+     *
+     * You can change this to 'json', 'plain', or any other custom mode you implement.
      */
-    'default_version' => env('BUMP_VERSION_DEFAULT_VERSION', '0.0.1'),
+    'mode' => env('BUMP_VERSION_MODE', 'json'),
+
+    /**
+     * Key used to access the version number in the file.
+     *
+     * This is particularly useful when using JSON or XML files where the version number is stored under a specific key.
+     *
+     * By default, it is set to 'version'.
+     */
+    'version_key' => env('BUMP_VERSION_KEY', 'version'),
 ];
 ```
 
