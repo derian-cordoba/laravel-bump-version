@@ -3,22 +3,22 @@
 namespace BumpVersion\Tools;
 
 use BumpVersion\Contracts\ReaderContract;
+use RuntimeException;
 
 class VersionReader implements ReaderContract
-{
+{    
     /**
      * {@inheritDoc}
      */
     public function read(): string
     {
-        $filePath = config(key: 'bump-version.file_path', default: 'version');
+        // Configure the mode for reading the version number based on the configuration.
+        $mode = config(key: 'bump-version.mode');
 
-        // Check if the version file exists, if not return the default version
-        if (! file_exists(filename: $filePath)) {
-            return config(key: 'bump-version.default_version');
-        }
-
-        // TODO: Implement the JSONReader and PlainReader to handle different file formats
-        return trim(string: file_get_contents(filename: $filePath));
+        return match($mode) {
+            'json' => JSONReader::read(content: PlainReader::read()),
+            'plain' => PlainReader::read(),
+            default => throw new RuntimeException(message: "Unsupported mode: {$mode}. Please use 'json' or 'plain'."),
+        };
     }
 }
