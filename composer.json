@@ -4,7 +4,7 @@
   "homepage": "https://github.com/derian-cordoba/laravel-bump-version",
   "type": "library",
   "license": "MIT",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "keywords": [
     "version",
     "bump",
