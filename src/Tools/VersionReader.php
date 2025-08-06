@@ -17,8 +17,9 @@ class VersionReader implements ReaderContract
 
         return match($mode) {
             'json' => JSONReader::read(content: PlainReader::read()),
+            'xml' => XMLReader::read(content: PlainReader::read()),
             'plain' => PlainReader::read(),
-            default => throw new RuntimeException(message: "Unsupported mode: {$mode}. Please use 'json' or 'plain'."),
+            default => throw new RuntimeException(message: "Unsupported mode: {$mode}. Please use 'json', 'xml', or 'plain'."),
         };
     }
 }

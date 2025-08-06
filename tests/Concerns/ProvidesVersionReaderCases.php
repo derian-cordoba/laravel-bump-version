@@ -29,6 +29,34 @@ trait ProvidesVersionReaderCases
                                       expectedVersion: '5.3.3',
                                       versionKey: 'deep.key.version'),
             ],
+            'xml_mode' => [
+                new VersionReaderCase(mode: 'xml',
+                                      filePath: 'xml-test.xml',
+                                      fileContent: <<<XML
+                                        <?xml version="1.0"?>
+                                        <root>
+                                            <version>3.4.5</version>
+                                        </root>
+                                      XML,
+                                      expectedVersion: '3.4.5',
+                                      versionKey: 'version'),
+            ],
+            'xml_deep_mode' => [
+                new VersionReaderCase(mode: 'xml',
+                                      filePath: 'xml-deep.xml',
+                                      fileContent: <<<XML
+                                        <?xml version="1.0"?>
+                                        <root>
+                                            <deep>
+                                                <key>
+                                                    <version>6.7.8</version>
+                                                </key>
+                                            </deep>
+                                        </root>
+                                      XML,
+                                      expectedVersion: '6.7.8',
+                                      versionKey: 'deep.key.version'),
+            ],
         ];
     }
 }
