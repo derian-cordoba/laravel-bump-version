@@ -148,7 +148,7 @@ return [
      *
      * By default, it is set to read from a JSON file.
      *
-     * You can change this to 'json', 'plain', or any other custom mode you implement.
+     * You can change this to 'json', 'plain', or 'xml' depending on your needs.
      */
     'mode' => env('BUMP_VERSION_MODE', 'json'),
 
