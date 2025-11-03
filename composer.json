@@ -4,7 +4,7 @@
   "homepage": "https://github.com/derian-cordoba/laravel-bump-version",
   "type": "library",
   "license": "MIT",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "keywords": [
     "version",
     "bump",
@@ -33,7 +33,8 @@
   "require": {
     "php": "^8.1",
     "laravel/framework": "^9.0|^10.0|^11.0|^12.0",
-    "mtownsend/xml-to-array": "^2.0"
+    "mtownsend/xml-to-array": "^2.0",
+    "jtrumbull/xml-parser": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^12.2",
