@@ -148,7 +148,7 @@ return [
      *
      * By default, it is set to read from a JSON file.
      *
-     * You can change this to 'json', 'plain', or 'xml' depending on your needs.
+     * You can change this to 'json', 'plain', or any other custom mode you implement.
      */
     'mode' => env('BUMP_VERSION_MODE', 'json'),
 
@@ -160,6 +160,15 @@ return [
      * By default, it is set to 'version'.
      */
     'version_key' => env('BUMP_VERSION_KEY', 'version'),
+
+    /**
+     * Default version number to use if the file does not exist or is empty.
+     *
+     * This ensures that there is always a valid version number to work with.
+     *
+     * By default, it is set to '0.1.0'.
+     */
+    'default_version' => env('BUMP_VERSION_DEFAULT', '0.0.0')
 ];
 ```
 
