@@ -2,15 +2,23 @@
 
 namespace BumpVersion\Tools;
 
+use RuntimeException;
+
 class JSONWriter
 {
     public static function write(string $version, string $content): string
     {
         $data = json_decode(json: $content, associative: true);
-        $content = data_set(target: $data,
-                            key: config(key: 'bump-version.version_key'),
-                            value: $version);
+        $data = data_set(target: $data,
+                         key: config(key: 'bump-version.version_key'),
+                         value: $version);
 
-        return json_encode(value: $content, flags: JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $encoded = json_encode(value: $data, flags: JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+        if ($encoded === false) {
+            throw new RuntimeException(message: 'Failed to encode version data as JSON: ' . json_last_error_msg());
+        }
+
+        return $encoded;
     }
 }

@@ -35,7 +35,18 @@ return [
      *
      * This ensures that there is always a valid version number to work with.
      *
-     * By default, it is set to '0.1.0'.
+     * By default, it is set to '0.0.0'.
      */
-    'default_version' => env('BUMP_VERSION_DEFAULT', '0.0.0')
+    'default_version' => env('BUMP_VERSION_DEFAULT', '0.0.0'),
+
+    /**
+     * Register custom formatters to extend the available modes.
+     *
+     * Built-in modes (json, plain, xml) are always available.
+     * Add your custom readers and writers here.
+     */
+    'formatters' => [
+        'readers' => [],
+        'writers' => [],
+    ],
 ];

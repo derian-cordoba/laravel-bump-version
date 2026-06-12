@@ -43,8 +43,8 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->app->bind(abstract: HandlerContract::class,
                          concrete: static fn (Application $app): VersionHandler =>
-                            new VersionHandler(writer: $app->make(WriterContract::class),
-                                               reader: $app->make(ReaderContract::class)));
+                            new VersionHandler(writer: $app->make(abstract: WriterContract::class),
+                                               reader: $app->make(abstract: ReaderContract::class)));
 
         if ($this->app->runningInConsole()) {
             $this->commands(commands: [BumpMajorCommand::class,
@@ -60,7 +60,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function publishConfig(string $configPath): void
     {
-        $this->publishes(paths: [$configPath => config_path('bump-version.php')],
+        $this->publishes(paths: [$configPath => config_path(path: 'bump-version.php')],
                          groups: 'config');
     }
 

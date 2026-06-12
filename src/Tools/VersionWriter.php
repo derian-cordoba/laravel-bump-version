@@ -2,19 +2,35 @@
 
 namespace BumpVersion\Tools;
 
-use BumpVersion\Contracts\ReaderContract;
 use BumpVersion\Contracts\WriterContract;
+use Illuminate\Support\Arr;
 use RuntimeException;
+
+use function array_key_exists;
+use function is_callable;
 
 class VersionWriter implements WriterContract
 {
-    private readonly string $mode;
-    private readonly string $content;
+    private readonly ?string $mode;
+    private readonly ?string $content;
 
-    public function __construct()
+    public function __construct(?string $mode = null,
+                                ?string $content = null)
     {
-        $this->mode = config(key: 'bump-version.mode');
-        $this->content = PlainReader::read();
+        $this->mode = $mode;
+        $this->content = $content;
+    }
+
+    /**
+     * @return array<string, class-string>
+     */
+    private function availableWriters(): array
+    {
+        return array_merge([
+            'json' => JSONWriter::class,
+            'plain' => PlainWriter::class,
+            'xml' => XMLWriter::class,
+        ], (array) config(key: 'bump-version.formatters.writers', default: []));
     }
 
     /**
@@ -22,15 +38,31 @@ class VersionWriter implements WriterContract
      */
     public function write(string $version): void
     {
-        // Generate content based on mode
-        $content = match($this->mode) {
-            'json' => JSONWriter::write(version: $version, content: $this->content),
-            'xml' => XMLWriter::write(version: $version, content: $this->content),
-            'plain' => $version, // For plain text, just use the version string directly
-            default => throw new RuntimeException(message: "Unsupported mode: {$this->mode}. Please use 'json', 'xml', or 'plain'."),
-        };
+        $mode = $this->mode ?? config(key: 'bump-version.mode', default: 'json');
+        $content = $this->content ?? FileContent::read();
+        $availableWriters = $this->availableWriters();
 
-        // Write content back to file
-        file_put_contents(filename: config('bump-version.file_path'), data: $content);
+        if (! array_key_exists(key: $mode, array: $availableWriters)) {
+            $formattedAvailableWriters = Arr::join(array: array_keys(array: $availableWriters),
+                                                   glue: ', ',
+                                                   finalGlue: ' or ');
+
+            throw new RuntimeException(message: "Unsupported mode: '$mode'. Please use $formattedAvailableWriters.");
+        }
+
+        $writer = $availableWriters[$mode];
+
+        if (! is_callable(value: [$writer, 'write'])) {
+            throw new RuntimeException(message: "Writer '{$writer}' must define a static write method.");
+        }
+
+        $filePath = config(key: 'bump-version.file_path');
+
+        $bytes = file_put_contents(filename: $filePath,
+                                   data: $writer::write(version: $version, content: $content));
+
+        if ($bytes === false) {
+            throw new RuntimeException(message: "Failed to write version to file: '$filePath'.");
+        }
     }
 }

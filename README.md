@@ -148,7 +148,7 @@ return [
      *
      * By default, it is set to read from a JSON file.
      *
-     * You can change this to 'json', 'plain', or 'xml' depending on your needs.
+     * You can change this to 'json', 'plain', 'xml', or any custom mode you implement.
      */
     'mode' => env('BUMP_VERSION_MODE', 'json'),
 
@@ -160,7 +160,58 @@ return [
      * By default, it is set to 'version'.
      */
     'version_key' => env('BUMP_VERSION_KEY', 'version'),
+
+    /**
+     * Default version number to use if the file does not exist or is empty.
+     */
+    'default_version' => env('BUMP_VERSION_DEFAULT', '0.0.0'),
+
+    /**
+     * Available formatters to read and write version files.
+     */
+    'formatters' => [
+        'readers' => [],
+        'writers' => [],
+    ],
 ];
+```
+
+### Custom Readers And Writers
+
+You can add a custom mode by registering formatter classes in the config. Readers receive the raw file content and return the version string. Writers receive the new version and the current file content, then return the full content that should be written back.
+
+```php
+'mode' => 'dotenv',
+
+'formatters' => [
+    'readers' => [
+        'dotenv' => App\Support\Version\DotenvReader::class,
+    ],
+    'writers' => [
+        'dotenv' => App\Support\Version\DotenvWriter::class,
+    ],
+],
+```
+
+```php
+final class DotenvReader
+{
+    public static function read(string $content): ?string
+    {
+        preg_match('/^APP_VERSION=(.+)$/m', $content, $matches);
+
+        return $matches[1] ?? null;
+    }
+}
+
+final class DotenvWriter
+{
+    public static function write(string $version, string $content): string
+    {
+        return preg_replace('/^APP_VERSION=.+$/m', "APP_VERSION={$version}", $content)
+            ?? $content;
+    }
+}
 ```
 
 ## Testing

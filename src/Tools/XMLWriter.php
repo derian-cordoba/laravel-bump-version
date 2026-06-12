@@ -3,6 +3,7 @@
 namespace BumpVersion\Tools;
 
 use Mtownsend\XmlToArray\XmlToArray as XML;
+use RuntimeException;
 use XMLParser\XMLParser;
 
 class XMLWriter
@@ -23,7 +24,12 @@ class XMLWriter
         // Re-convert array to XML
         $xml = XMLParser::encode(data: $data, root: $rootElementName);
 
-        // Return XML as string
-        return $xml->asXML();
+        $result = $xml->asXML();
+
+        if ($result === false) {
+            throw new RuntimeException(message: 'Failed to serialize XML version data.');
+        }
+
+        return $result;
     }
 }
